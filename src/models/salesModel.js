@@ -1,5 +1,91 @@
 import mongoose from "mongoose";
 
+// ================================
+// ORDER TRACKING SCHEMA
+// ================================
+const orderTrackingSchema = new mongoose.Schema(
+    {
+        orderId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'SalesOrder',
+            required: true
+        },
+        orderNumber: {
+            type: String,
+            required: true
+        },
+        customerId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Customer',
+            required: true
+        },
+        trackingNumber: {
+            type: String,
+            required: true,
+            unique: true
+        },
+        status: {
+            type: String,
+            enum: ['Order Placed', 'Confirmed', 'Processing', 'Packed', 'Shipped', 'In Transit', 'Out for Delivery', 'Delivered', 'Cancelled', 'Returned'],
+            default: 'Order Placed'
+        },
+        currentLocation: {
+            type: String
+        },
+        estimatedDelivery: {
+            type: Date
+        },
+        actualDelivery: {
+            type: Date
+        },
+        trackingHistory: [{
+            status: {
+                type: String,
+                required: true
+            },
+            location: String,
+            timestamp: {
+                type: Date,
+                default: Date.now
+            },
+            description: String,
+            updatedBy: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Staff'
+            }
+        }],
+        carrier: {
+            name: String,
+            trackingNumber: String,
+            contact: String
+        },
+        deliveryAddress: {
+            type: String,
+            required: true
+        },
+        specialInstructions: {
+            type: String
+        },
+        isDelivered: {
+            type: Boolean,
+            default: false
+        },
+        deliveryProof: {
+            signature: String,
+            image: String,
+            deliveredBy: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Staff'
+            },
+            deliveredAt: Date
+        }
+    },
+    { timestamps: true }
+);
+
+// ================================
+// SALES ORDER SCHEMA (UPDATED)
+// ================================
 const salesOrderSchema = new mongoose.Schema(
     {
         orderNumber: {
@@ -86,7 +172,8 @@ const salesOrderSchema = new mongoose.Schema(
             default: 'Pending'
         },
         warehouse: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Warehouse',
             required: true
         },
         shippingAddress: {
@@ -97,13 +184,24 @@ const salesOrderSchema = new mongoose.Schema(
             type: String
         },
         createdBy: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Staff',
             required: true
+        },
+        approvedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Staff'
+        },
+        approvedAt: {
+            type: Date
         }
     },
     { timestamps: true }
 );
 
+// ================================
+// SALES RETURN SCHEMA (UPDATED)
+// ================================
 const salesReturnSchema = new mongoose.Schema(
     {
         returnNumber: {
@@ -182,20 +280,32 @@ const salesReturnSchema = new mongoose.Schema(
             default: 'Pending'
         },
         warehouse: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Warehouse',
             required: true
         },
         notes: {
             type: String
         },
         createdBy: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Staff',
             required: true
+        },
+        approvedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Staff'
+        },
+        approvedAt: {
+            type: Date
         }
     },
     { timestamps: true }
 );
 
+// ================================
+// DELIVERY CHALLAN SCHEMA (UPDATED)
+// ================================
 const deliveryChallanSchema = new mongoose.Schema(
     {
         challanNumber: {
@@ -262,23 +372,36 @@ const deliveryChallanSchema = new mongoose.Schema(
             default: 'Dispatched'
         },
         warehouse: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Warehouse',
             required: true
         },
         notes: {
             type: String
         },
         createdBy: {
-            type: String,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Staff',
             required: true
+        },
+        deliveredBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Staff'
+        },
+        deliveredAt: {
+            type: Date
         }
     },
     { timestamps: true }
 );
 
+// ================================
+// MODELS EXPORT
+// ================================
 const SalesOrderModel = mongoose.model('SalesOrder', salesOrderSchema);
 const SalesReturnModel = mongoose.model('SalesReturn', salesReturnSchema);
 const DeliveryChallanModel = mongoose.model('DeliveryChallan', deliveryChallanSchema);
+const OrderTrackingModel = mongoose.model('OrderTracking', orderTrackingSchema);
 
-export { SalesOrderModel, SalesReturnModel, DeliveryChallanModel };
+export { SalesOrderModel, SalesReturnModel, DeliveryChallanModel, OrderTrackingModel };
 

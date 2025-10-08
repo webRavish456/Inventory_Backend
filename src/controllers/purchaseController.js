@@ -1,4 +1,4 @@
-import { PurchaseOrderModel, PurchaseReturnModel } from '../models/purchaseModel.js';
+import { PurchaseOrderModel, PurchaseReturnModel, CostTrackingModel, GoodsReceiptNoteModel, PendingOrderModel } from '../models/purchaseModel.js';
 
 // Purchase Orders
 export const getAllPurchaseOrders = async (req, res) => {
@@ -215,6 +215,375 @@ export const deletePurchaseReturn = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error deleting purchase return',
+      error: error.message
+    });
+  }
+};
+
+// ================================
+// COST TRACKING CONTROLLERS
+// ================================
+
+// Get all cost tracking records
+export const getAllCostTracking = async (req, res) => {
+  try {
+    const records = await CostTrackingModel.find()
+      .populate('purchaseOrderId')
+      .populate('itemId')
+      .populate('supplierId')
+      .populate('createdBy')
+      .sort({ createdAt: -1 });
+    res.json({
+      success: true,
+      data: records
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching cost tracking records',
+      error: error.message
+    });
+  }
+};
+
+// Get cost tracking by ID
+export const getCostTrackingById = async (req, res) => {
+  try {
+    const record = await CostTrackingModel.findById(req.params.id)
+      .populate('purchaseOrderId')
+      .populate('itemId')
+      .populate('supplierId')
+      .populate('createdBy');
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Cost tracking record not found'
+      });
+    }
+    res.json({
+      success: true,
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching cost tracking record',
+      error: error.message
+    });
+  }
+};
+
+// Create new cost tracking record
+export const createCostTracking = async (req, res) => {
+  try {
+    const record = new CostTrackingModel(req.body);
+    await record.save();
+    res.status(201).json({
+      success: true,
+      message: 'Cost tracking record created successfully',
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error creating cost tracking record',
+      error: error.message
+    });
+  }
+};
+
+// Update cost tracking record
+export const updateCostTracking = async (req, res) => {
+  try {
+    const record = await CostTrackingModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Cost tracking record not found'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Cost tracking record updated successfully',
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating cost tracking record',
+      error: error.message
+    });
+  }
+};
+
+// Delete cost tracking record
+export const deleteCostTracking = async (req, res) => {
+  try {
+    const record = await CostTrackingModel.findByIdAndDelete(req.params.id);
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Cost tracking record not found'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Cost tracking record deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting cost tracking record',
+      error: error.message
+    });
+  }
+};
+
+// ================================
+// GOODS RECEIPT NOTE CONTROLLERS
+// ================================
+
+// Get all goods receipt notes
+export const getAllGoodsReceiptNotes = async (req, res) => {
+  try {
+    const records = await GoodsReceiptNoteModel.find()
+      .populate('purchaseOrderId')
+      .populate('supplierId')
+      .populate('warehouseId')
+      .populate('receivedBy')
+      .populate('verifiedBy')
+      .sort({ createdAt: -1 });
+    res.json({
+      success: true,
+      data: records
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching goods receipt notes',
+      error: error.message
+    });
+  }
+};
+
+// Get goods receipt note by ID
+export const getGoodsReceiptNoteById = async (req, res) => {
+  try {
+    const record = await GoodsReceiptNoteModel.findById(req.params.id)
+      .populate('purchaseOrderId')
+      .populate('supplierId')
+      .populate('warehouseId')
+      .populate('receivedBy')
+      .populate('verifiedBy');
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goods receipt note not found'
+      });
+    }
+    res.json({
+      success: true,
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching goods receipt note',
+      error: error.message
+    });
+  }
+};
+
+// Create new goods receipt note
+export const createGoodsReceiptNote = async (req, res) => {
+  try {
+    const record = new GoodsReceiptNoteModel(req.body);
+    await record.save();
+    res.status(201).json({
+      success: true,
+      message: 'Goods receipt note created successfully',
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error creating goods receipt note',
+      error: error.message
+    });
+  }
+};
+
+// Update goods receipt note
+export const updateGoodsReceiptNote = async (req, res) => {
+  try {
+    const record = await GoodsReceiptNoteModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goods receipt note not found'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Goods receipt note updated successfully',
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating goods receipt note',
+      error: error.message
+    });
+  }
+};
+
+// Delete goods receipt note
+export const deleteGoodsReceiptNote = async (req, res) => {
+  try {
+    const record = await GoodsReceiptNoteModel.findByIdAndDelete(req.params.id);
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Goods receipt note not found'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Goods receipt note deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting goods receipt note',
+      error: error.message
+    });
+  }
+};
+
+// ================================
+// PENDING ORDERS CONTROLLERS
+// ================================
+
+// Get all pending orders
+export const getAllPendingOrders = async (req, res) => {
+  try {
+    const records = await PendingOrderModel.find()
+      .populate('purchaseOrderId')
+      .populate('supplierId')
+      .populate('assignedTo')
+      .sort({ createdAt: -1 });
+    res.json({
+      success: true,
+      data: records
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching pending orders',
+      error: error.message
+    });
+  }
+};
+
+// Get pending order by ID
+export const getPendingOrderById = async (req, res) => {
+  try {
+    const record = await PendingOrderModel.findById(req.params.id)
+      .populate('purchaseOrderId')
+      .populate('supplierId')
+      .populate('assignedTo');
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Pending order not found'
+      });
+    }
+    res.json({
+      success: true,
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching pending order',
+      error: error.message
+    });
+  }
+};
+
+// Create new pending order
+export const createPendingOrder = async (req, res) => {
+  try {
+    const record = new PendingOrderModel(req.body);
+    await record.save();
+    res.status(201).json({
+      success: true,
+      message: 'Pending order created successfully',
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error creating pending order',
+      error: error.message
+    });
+  }
+};
+
+// Update pending order
+export const updatePendingOrder = async (req, res) => {
+  try {
+    const record = await PendingOrderModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Pending order not found'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Pending order updated successfully',
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating pending order',
+      error: error.message
+    });
+  }
+};
+
+// Delete pending order
+export const deletePendingOrder = async (req, res) => {
+  try {
+    const record = await PendingOrderModel.findByIdAndDelete(req.params.id);
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Pending order not found'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Pending order deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting pending order',
       error: error.message
     });
   }

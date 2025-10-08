@@ -1,4 +1,4 @@
-import { SalesOrderModel, SalesReturnModel, DeliveryChallanModel } from '../models/salesModel.js';
+import { SalesOrderModel, SalesReturnModel, DeliveryChallanModel, OrderTrackingModel } from '../models/salesModel.js';
 
 // Sales Orders
 export const getAllSalesOrders = async (req, res) => {
@@ -326,6 +326,127 @@ export const deleteDeliveryChallan = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error deleting delivery challan',
+      error: error.message
+    });
+  }
+};
+
+// ================================
+// ORDER TRACKING CONTROLLERS
+// ================================
+
+// Get all order tracking records
+export const getAllOrderTracking = async (req, res) => {
+  try {
+    const records = await OrderTrackingModel.find()
+      .populate('orderId')
+      .populate('customerId')
+      .populate('assignedTo')
+      .sort({ createdAt: -1 });
+    res.json({
+      success: true,
+      data: records
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching order tracking records',
+      error: error.message
+    });
+  }
+};
+
+// Get order tracking by ID
+export const getOrderTrackingById = async (req, res) => {
+  try {
+    const record = await OrderTrackingModel.findById(req.params.id)
+      .populate('orderId')
+      .populate('customerId')
+      .populate('assignedTo');
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order tracking record not found'
+      });
+    }
+    res.json({
+      success: true,
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching order tracking record',
+      error: error.message
+    });
+  }
+};
+
+// Create new order tracking record
+export const createOrderTracking = async (req, res) => {
+  try {
+    const record = new OrderTrackingModel(req.body);
+    await record.save();
+    res.status(201).json({
+      success: true,
+      message: 'Order tracking record created successfully',
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error creating order tracking record',
+      error: error.message
+    });
+  }
+};
+
+// Update order tracking record
+export const updateOrderTracking = async (req, res) => {
+  try {
+    const record = await OrderTrackingModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order tracking record not found'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Order tracking record updated successfully',
+      data: record
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error updating order tracking record',
+      error: error.message
+    });
+  }
+};
+
+// Delete order tracking record
+export const deleteOrderTracking = async (req, res) => {
+  try {
+    const record = await OrderTrackingModel.findByIdAndDelete(req.params.id);
+    if (!record) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order tracking record not found'
+      });
+    }
+    res.json({
+      success: true,
+      message: 'Order tracking record deleted successfully'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error deleting order tracking record',
       error: error.message
     });
   }
