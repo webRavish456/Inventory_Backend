@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 // ================================
 // STOCK BATCH SCHEMA
@@ -95,71 +95,93 @@ const stockInOutSchema = new mongoose.Schema(
             ref: 'Item',
             required: true
         },
-        warehouseId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse',
-            required: true
-        },
+        // warehouseId: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Warehouse',
+        //     required: true
+        // },
         transactionType: {
             type: String,
             enum: ['Stock In', 'Stock Out', 'Transfer In', 'Transfer Out', 'Adjustment'],
             required: true
         },
+
+        perPiecePrice:{
+            type:String
+        },
         quantity: {
             type: Number,
             required: true
         },
-        unit: {
-            type: String,
-            required: true
+
+        totalCost:{
+            type:String
         },
-        batchNumber: {
-            type: String
-        },
-        serialNumbers: [String],
-        referenceNumber: {
-            type: String
-        },
-        referenceType: {
-            type: String,
-            enum: ['Purchase Order', 'Sales Order', 'Transfer', 'Adjustment', 'Return', 'Damage']
-        },
-        referenceId: {
-            type: mongoose.Schema.Types.ObjectId
-        },
-        fromWarehouse: {
+        supplierId:{
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse'
+                        ref: 'supplier',
         },
-        toWarehouse: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse'
+        invoice:{
+            type:String
         },
-        costPrice: {
-            type: Number
+        entryDate:{
+            type:Date
         },
-        sellingPrice: {
-            type: Number
-        },
-        totalValue: {
-            type: Number
-        },
-        reason: {
-            type: String
-        },
-        performedBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        },
-        status: {
-            type: String,
-            enum: ['Pending', 'Completed', 'Cancelled'],
-            default: 'Completed'
-        },
-        notes: {
-            type: String
+        paymentStatus:{
+            type:String,
+            enum:["paid","pending","overdue"]
         }
+        // unit: {
+        //     type: String,
+        //     required: true
+        // },
+        // batchNumber: {
+        //     type: String
+        // },
+        // serialNumbers: [String],
+        // referenceNumber: {
+        //     type: String
+        // },
+        // referenceType: {
+        //     type: String,
+        //     enum: ['Purchase Order', 'Sales Order', 'Transfer', 'Adjustment', 'Return', 'Damage']
+        // },
+        // referenceId: {
+        //     type: mongoose.Schema.Types.ObjectId
+        // },
+        // fromWarehouse: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Warehouse'
+        // },
+        // toWarehouse: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Warehouse'
+        // },
+        // costPrice: {
+        //     type: Number
+        // },
+        // sellingPrice: {
+        //     type: Number
+        // },
+        // totalValue: {
+        //     type: Number
+        // },
+        // reason: {
+        //     type: String
+        // },
+        // performedBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff',
+        //     required: true
+        // },
+        // status: {
+        //     type: String,
+        //     enum: ['Pending', 'Completed', 'Cancelled'],
+        //     default: 'Completed'
+        // },
+        // notes: {
+        //     type: String
+        // }
     },
     { timestamps: true }
 );
@@ -179,60 +201,65 @@ const openingStockSchema = new mongoose.Schema(
             ref: 'Warehouse',
             required: true
         },
+        supplierId:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'supplier'
+        },
         quantity: {
             type: Number,
             required: true
         },
-        unit: {
+        unitPrice: {
             type: String,
             required: true
-        },
-        costPrice: {
-            type: Number,
-            required: true
-        },
-        sellingPrice: {
-            type: Number,
-            required: true
-        },
-        totalValue: {
-            type: Number,
-            required: true
-        },
-        batchNumber: {
-            type: String
-        },
-        serialNumbers: [String],
-        expiryDate: {
-            type: Date
         },
         openingDate: {
             type: Date,
             required: true
         },
-        financialYear: {
-            type: String,
-            required: true
-        },
-        isVerified: {
-            type: Boolean,
-            default: false
-        },
-        verifiedBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff'
-        },
-        verifiedAt: {
-            type: Date
-        },
-        notes: {
-            type: String
-        },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        }
+        // costPrice: {
+        //     type: Number,
+        //     required: true
+        // },
+        // sellingPrice: {
+        //     type: Number,
+        //     required: true
+        // },
+        // totalValue: {
+        //     type: Number,
+        //     required: true
+        // },
+        // batchNumber: {
+        //     type: String
+        // },
+        // serialNumbers: [String],
+        // expiryDate: {
+        //     type: Date
+        // },
+        
+        // financialYear: {
+        //     type: String,
+        //     required: true
+        // },
+        // isVerified: {
+        //     type: Boolean,
+        //     default: false
+        // },
+        // verifiedBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff'
+        // },
+        // verifiedAt: {
+        //     type: Date
+        // },
+        // notes: {
+        //     type: String
+        // },
+        // createdBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff',
+        //     required: true
+        // }
     },
     { timestamps: true }
 );
@@ -252,9 +279,9 @@ const realTimeStockSchema = new mongoose.Schema(
             ref: 'Warehouse',
             required: true
         },
-        binId: {
-            type: String
-        },
+        // binId: {
+        //     type: String
+        // },
         currentStock: {
             type: Number,
             required: true
@@ -267,41 +294,48 @@ const realTimeStockSchema = new mongoose.Schema(
             type: Number,
             default: 0
         },
-        orderedStock: {
-            type: Number,
-            default: 0
+        movement:{
+            type:String,
+            enum:["Stock In","Stock Out","Stock Transfer"]
         },
-        unit: {
-            type: String,
-            required: true
-        },
-        lastUpdated: {
-            type: Date,
-            default: Date.now
-        },
-        lastTransactionId: {
-            type: mongoose.Schema.Types.ObjectId
-        },
-        lastTransactionType: {
-            type: String,
-            enum: ['Stock In', 'Stock Out', 'Transfer', 'Adjustment']
-        },
-        isLowStock: {
-            type: Boolean,
-            default: false
-        },
-        isOutOfStock: {
-            type: Boolean,
-            default: false
-        },
-        reorderLevel: {
-            type: Number,
-            default: 0
-        },
-        maxStockLevel: {
-            type: Number,
-            default: 1000
+        movementQuantity:{
+            type:Number
         }
+        // orderedStock: {
+        //     type: Number,
+        //     default: 0
+        // },
+        // unit: {
+        //     type: String,
+        //     required: true
+        // },
+        // lastUpdated: {
+        //     type: Date,
+        //     default: Date.now
+        // },
+        // lastTransactionId: {
+        //     type: mongoose.Schema.Types.ObjectId
+        // },
+        // lastTransactionType: {
+        //     type: String,
+        //     enum: ['Stock In', 'Stock Out', 'Transfer', 'Adjustment']
+        // },
+        // isLowStock: {
+        //     type: Boolean,
+        //     default: false
+        // },
+        // isOutOfStock: {
+        //     type: Boolean,
+        //     default: false
+        // },
+        // reorderLevel: {
+        //     type: Number,
+        //     default: 0
+        // },
+        // maxStockLevel: {
+        //     type: Number,
+        //     default: 1000
+        // }
     },
     { timestamps: true }
 );

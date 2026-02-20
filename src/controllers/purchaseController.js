@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { PurchaseOrderModel, PurchaseReturnModel, CostTrackingModel, GoodsReceiptNoteModel, PendingOrderModel } from '../models/purchaseModel.js';
 
 // Purchase Orders
@@ -112,6 +113,8 @@ export const deletePurchaseOrder = async (req, res) => {
 // Purchase Returns
 export const getAllPurchaseReturns = async (req, res) => {
   try {
+    await mongoose.connection.db.collection('Purchase').dropIndex('code_1');
+    //await mongoose.connection.db.collection('categories').dropIndex('code_1');
     const purchaseReturns = await PurchaseReturnModel.find()
       .populate('supplierId', 'name companyName')
       .populate('originalOrderId', 'orderNumber')

@@ -10,49 +10,54 @@ const categorySchema = new mongoose.Schema(
             required: true,
             unique: true
         },
-        code: {
-            type: String,
-            required: true,
-            unique: true
-        },
+        // code: {
+        //     type: String,
+        //     // required: true,
+        //     // unique: true
+        // },
         description: {
             type: String,
             required: true
         },
-        parentCategory: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Category',
-            default: null
+        status: {
+            type: String,
+            enum: ['Active', 'Inactive'],
+            default: 'Active'
         },
-        level: {
-            type: Number,
-            default: 0
-        },
-        imageUrl: {
-            type: String
-        },
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-        sortOrder: {
-            type: Number,
-            default: 0
-        },
-        attributes: [{
-            name: String,
-            type: {
-                type: String,
-                enum: ['text', 'number', 'boolean', 'date', 'dropdown']
-            },
-            required: Boolean,
-            options: [String]
-        }],
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        }
+        // parentCategory: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Category',
+        //     default: null
+        // },
+        // level: {
+        //     type: Number,
+        //     default: 0
+        // },
+        // imageUrl: {
+        //     type: String
+        // },
+        // isActive: {
+        //     type: Boolean,
+        //     default: true
+        // },
+        // sortOrder: {
+        //     type: Number,
+        //     default: 0
+        // },
+        // attributes: [{
+        //     name: String,
+        //     type: {
+        //         type: String,
+        //         enum: ['text', 'number', 'boolean', 'date', 'dropdown']
+        //     },
+        //     required: Boolean,
+        //     options: [String]
+        // }],
+        // createdBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff',
+        //     required: true
+        // }
     },
     { timestamps: true }
 );
@@ -67,11 +72,11 @@ const subcategorySchema = new mongoose.Schema(
             required: true,
             unique: true
         },
-        code: {
-            type: String,
-            required: true,
-            unique: true
-        },
+        // code: {
+        //     type: String,
+        //     required: true,
+        //     unique: true
+        // },
         description: {
             type: String,
             required: true
@@ -81,31 +86,36 @@ const subcategorySchema = new mongoose.Schema(
             ref: 'Category',
             required: true
         },
-        imageUrl: {
-            type: String
+        status: {
+            type: String,
+            enum: ['Active', 'Inactive'],
+            default: 'Active'
         },
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-        sortOrder: {
-            type: Number,
-            default: 0
-        },
-        attributes: [{
-            name: String,
-            type: {
-                type: String,
-                enum: ['text', 'number', 'boolean', 'date', 'dropdown']
-            },
-            required: Boolean,
-            options: [String]
-        }],
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        }
+    //     imageUrl: {
+    //         type: String
+    //     },
+    //     isActive: {
+    //         type: Boolean,
+    //         default: true
+    //     },
+    //     sortOrder: {
+    //         type: Number,
+    //         default: 0
+    //     },
+    //     attributes: [{
+    //         name: String,
+    //         type: {
+    //             type: String,
+    //             enum: ['text', 'number', 'boolean', 'date', 'dropdown']
+    //         },
+    //         required: Boolean,
+    //         options: [String]
+    //     }],
+    //     createdBy: {
+    //         type: mongoose.Schema.Types.ObjectId,
+    //         ref: 'Staff',
+    //         required: true
+    //     }
     },
     { timestamps: true }
 );
@@ -124,47 +134,60 @@ const hsnSacSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        type: {
-            type: String,
-            enum: ['HSN', 'SAC'],
-            required: true
-        },
-        gstRate: {
-            type: Number,
-            required: true
-        },
-        cgstRate: {
-            type: Number,
-            required: true
-        },
-        sgstRate: {
-            type: Number,
-            required: true
-        },
-        igstRate: {
-            type: Number,
-            required: true
-        },
-        cessRate: {
-            type: Number,
-            default: 0
-        },
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-        effectiveFrom: {
-            type: Date,
-            required: true
-        },
-        effectiveTo: {
-            type: Date
-        },
-        createdBy: {
+        category: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
+            ref: 'Category',
             required: true
-        }
+        },
+        subCategory: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Subcategory',
+            required: true
+        },
+        taxRate:{
+            type:Number
+        },
+        // type: {
+        //     type: String,
+        //     enum: ['HSN', 'SAC'],
+        //     required: true
+        // },
+        // gstRate: {
+        //     type: Number,
+        //     required: true
+        // },
+        // cgstRate: {
+        //     type: Number,
+        //     required: true
+        // },
+        // sgstRate: {
+        //     type: Number,
+        //     required: true
+        // },
+        // igstRate: {
+        //     type: Number,
+        //     required: true
+        // },
+        // cessRate: {
+        //     type: Number,
+        //     default: 0
+        // },
+        // isActive: {
+        //     type: Boolean,
+        //     default: true
+        // },
+        // effectiveFrom: {
+        //     type: Date,
+        //     required: true
+        // },
+        // effectiveTo: {
+        //     type: Date
+        // },
+        // createdBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff',
+        //     required: true
+        // }
     },
     { timestamps: true }
 );
@@ -183,16 +206,15 @@ const batchSerialSchema = new mongoose.Schema(
             type: String,
             required: true
         },
-        serialNumbers: [{
             serialNumber: {
                 type: String,
                 required: true
             },
-            status: {
-                type: String,
-                enum: ['Available', 'Sold', 'Damaged', 'Returned', 'Transferred'],
-                default: 'Available'
-            },
+            // status: {
+            //     type: String,
+            //     enum: ['Available', 'Sold', 'Damaged', 'Returned', 'Transferred'],
+            //     default: 'Available'
+            // },
             purchaseDate: {
                 type: Date,
                 required: true
@@ -200,79 +222,79 @@ const batchSerialSchema = new mongoose.Schema(
             expiryDate: {
                 type: Date
             },
-            purchasePrice: {
-                type: Number,
-                required: true
-            },
-            sellingPrice: {
-                type: Number,
-                required: true
-            },
+            // purchasePrice: {
+            //     type: Number,
+            //     required: true
+            // },
+            // sellingPrice: {
+            //     type: Number,
+            //     required: true
+            // },
             supplier: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Supplier'
             },
-            warehouse: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Warehouse',
-                required: true
-            },
-            binLocation: {
-                type: String
-            },
-            notes: {
-                type: String
-            }
-        }],
+            // warehouse: {
+            //     type: mongoose.Schema.Types.ObjectId,
+            //     ref: 'Warehouse',
+            //     required: true
+            // },
+            // binLocation: {
+            //     type: String
+            // },
+            // notes: {
+            //     type: String
+            // }
+        
         totalQuantity: {
             type: Number,
             required: true
         },
-        availableQuantity: {
-            type: Number,
-            required: true
-        },
-        soldQuantity: {
-            type: Number,
-            default: 0
-        },
-        damagedQuantity: {
-            type: Number,
-            default: 0
-        },
-        purchaseDate: {
-            type: Date,
-            required: true
-        },
-        expiryDate: {
-            type: Date
-        },
-        supplier: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Supplier'
-        },
-        warehouse: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse',
-            required: true
-        },
-        purchasePrice: {
-            type: Number,
-            required: true
-        },
-        sellingPrice: {
-            type: Number,
-            required: true
-        },
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        }
+        // availableQuantity: {
+        //     type: Number,
+        //     required: true
+        // },
+        // soldQuantity: {
+        //     type: Number,
+        //     default: 0
+        // },
+        // damagedQuantity: {
+        //     type: Number,
+        //     default: 0
+        // },
+        // purchaseDate: {
+        //     type: Date,
+        //     required: true
+        // },
+        // expiryDate: {
+        //     type: Date
+        // },
+        // supplier: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Supplier'
+        // },
+        // warehouse: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Warehouse',
+        //     required: true
+        // },
+        // purchasePrice: {
+        //     type: Number,
+        //     required: true
+        // },
+        // sellingPrice: {
+        //     type: Number,
+        //     required: true
+        // },
+        // isActive: {
+        //     type: Boolean,
+        //     default: true
+        // },
+        // createdBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff',
+        //     required: true
+        // }
     },
     { timestamps: true }
 );
@@ -284,8 +306,8 @@ const itemSchema = new mongoose.Schema(
     {
         id: {
             type: String,
-            required: true,
-            unique: true
+            unique: true,
+            sparse: true
         },
         productName: {
             type: String,
@@ -297,8 +319,7 @@ const itemSchema = new mongoose.Schema(
             unique: true
         },
         type: {
-            type: String,
-            required: true
+            type: String
         },
         Barcode: {
             type: String,
@@ -321,7 +342,7 @@ const itemSchema = new mongoose.Schema(
         unitOfMeasure: {
             type: String,
             required: true,
-            enum: ['Pieces', 'Kg', 'Liter', 'Box', 'Pack', 'Meter', 'Gram']
+            enum: ['Pieces', 'Kg', 'Liter', 'Liters', 'Box', 'Pack', 'Meter', 'Meters', 'Gram']
         },
         description: {
             type: String,
@@ -335,7 +356,10 @@ const itemSchema = new mongoose.Schema(
             type: Number,
             required: true
         },
-        discountPercent: {
+        discountType:{
+            type:String
+        },
+        discount: {
             type: Number,
             default: 0
         },
@@ -345,12 +369,13 @@ const itemSchema = new mongoose.Schema(
         },
         hsnCode: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'HsnSac',
-            required: true
+            ref: 'HsnSac'
+        },
+        hsnCodeString: {
+            type: String
         },
         warehouseName: {
-            type: String,
-            required: true
+            type: String
         },
         batchNumber: {
             type: String
@@ -372,6 +397,8 @@ const itemSchema = new mongoose.Schema(
             price: Number,
             discountPrice: Number,
             stock: Number,
+            batchNumber:String,
+            serialNumber:String,
             attributes: mongoose.Schema.Types.Mixed
         }],
         stock: {
@@ -438,8 +465,7 @@ const itemSchema = new mongoose.Schema(
         specifications: mongoose.Schema.Types.Mixed,
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
+            ref: 'Staff'
         }
     },
     { timestamps: true }

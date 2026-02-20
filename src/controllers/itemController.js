@@ -3,7 +3,7 @@ import ItemModel, { CategoryModel, SubcategoryModel, HsnSacModel, BatchSerialMod
 // Get all items
 export const getAllItems = async (req, res) => {
   try {
-    const items = await ItemModel.find().sort({ createdAt: -1 });
+    const items = await ItemModel.find().populate('category', 'name').populate('subCategory', 'name').sort({ createdAt: -1 });
     res.json({
       success: true,
       data: items
@@ -20,7 +20,7 @@ export const getAllItems = async (req, res) => {
 // Get item by ID
 export const getItemById = async (req, res) => {
   try {
-    const item = await ItemModel.findById(req.params.id);
+    const item = await ItemModel.findById(req.params.id).populate('category', 'name').populate('subCategory', 'name');
     if (!item) {
       return res.status(404).json({
         success: false,
@@ -132,8 +132,8 @@ export const getItemsByCategory = async (req, res) => {
 export const getLowStockItems = async (req, res) => {
   try {
     const items = await ItemModel.find({
-      $expr: { $lte: ['$currentStock', '$minStock'] }
-    }).sort({ currentStock: 1 });
+      $expr: { $lte: ['$stock', '$minStock'] }
+    }).sort({ stock: 1 });
     res.json({
       success: true,
       data: items
@@ -154,7 +154,7 @@ export const getLowStockItems = async (req, res) => {
 // Get all categories
 export const getAllCategories = async (req, res) => {
   try {
-    const categories = await CategoryModel.find().populate('parentCategory').sort({ sortOrder: 1 });
+    const categories = await CategoryModel.find().sort({ sortOrder: 1 });
     res.json({
       success: true,
       data: categories
@@ -171,7 +171,7 @@ export const getAllCategories = async (req, res) => {
 // Get category by ID
 export const getCategoryById = async (req, res) => {
   try {
-    const category = await CategoryModel.findById(req.params.id).populate('parentCategory');
+    const category = await CategoryModel.findById(req.params.id);
     if (!category) {
       return res.status(404).json({
         success: false,
@@ -190,10 +190,11 @@ export const getCategoryById = async (req, res) => {
     });
   }
 };
-
+import mongoose from 'mongoose';
 // Create new category
 export const createCategory = async (req, res) => {
   try {
+     //await mongoose.connection.db.collection('categories').dropIndex('code_1');
     const category = new CategoryModel(req.body);
     await category.save();
     res.status(201).json({
@@ -309,6 +310,10 @@ export const getSubcategoryById = async (req, res) => {
 export const createSubcategory = async (req, res) => {
   try {
     const subcategory = new SubcategoryModel(req.body);
+    //await mongoose.connection.db.collection('subcategories').dropIndex('code_1');
+    //console.log("index dropped successfully");
+         //await mongoose.connection.db.collection('categories').dropIndex('code_1');
+
     await subcategory.save();
     res.status(201).json({
       success: true,
@@ -499,7 +504,6 @@ export const getAllBatchSerialRecords = async (req, res) => {
     const records = await BatchSerialModel.find()
       .populate('itemId')
       .populate('supplier')
-      .populate('warehouse')
       .sort({ createdAt: -1 });
     res.json({
       success: true,
@@ -519,8 +523,7 @@ export const getBatchSerialRecordById = async (req, res) => {
   try {
     const record = await BatchSerialModel.findById(req.params.id)
       .populate('itemId')
-      .populate('supplier')
-      .populate('warehouse');
+      .populate('supplier');
     if (!record) {
       return res.status(404).json({
         success: false,
@@ -615,7 +618,6 @@ export const getBatchSerialRecordsByItem = async (req, res) => {
   try {
     const records = await BatchSerialModel.find({ itemId: req.params.itemId })
       .populate('supplier')
-      .populate('warehouse')
       .sort({ createdAt: -1 });
     res.json({
       success: true,

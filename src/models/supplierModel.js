@@ -6,6 +6,10 @@ const supplierSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        contactPerson:{
+            type:String
+        },
+
         companyName: {
             type: String,
             required: true
@@ -39,6 +43,18 @@ const supplierSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        supplierType:{
+            type:String,
+            enum:[ "Electronics",
+    "Furniture",
+    "Kitchenware",
+    "Clothing",
+    "Books",
+    "Home & Garden",
+    "Sports",
+    "Automotive",
+    "Health & Beauty"]
+        },
         panNumber: {
             type: String,
             required: true
@@ -62,7 +78,13 @@ const supplierSchema = new mongoose.Schema(
             min: 1,
             max: 5,
             default: 3
-        }
+        },
+        accountHolderName: { type: String },
+        accountNumber: { type: String },
+        bankName: { type: String },
+        IFSC: { type: String },
+        bankBranch: { type: String },
+        bankLocation: { type: String }
     },
     { timestamps: true }
 );

@@ -3,7 +3,8 @@ import { verifyToken } from '../middleware/auth.js';
 
 // Import all controller functions
 import {  loginAdmin} from '../controllers/authController.js';
-import { getAllStaff, getStaffById, createStaff, updateStaff, deleteStaff } from '../controllers/staffController.js';
+import { getAllStaff, getStaffById, createStaff, updateStaff, deleteStaff, downloadStaffDocument } from '../controllers/staffController.js';
+import { staffDocumentUpload } from '../middleware/staffUpload.js';
 import { 
   getAllWarehouses, getWarehouseById, createWarehouse, updateWarehouse, deleteWarehouse, addBinToWarehouse,
   getAllBinRacks, getBinRackById, createBinRack, updateBinRack, deleteBinRack, getBinRacksByWarehouse,
@@ -56,6 +57,7 @@ import {
 import { getAllInvoices, getInvoiceById, createInvoice, updateInvoice, deleteInvoice, getInvoicesByCustomer, getInvoicesByPaymentStatus, updatePaymentStatus } from '../controllers/invoiceController.js';
 import { getAllExpenses, getExpenseById, createExpense, updateExpense, deleteExpense, getAllIncome, getIncomeById, createIncome, updateIncome, deleteIncome, getExpensesByWarehouse, getIncomeByWarehouse } from '../controllers/financeController.js';
 import { getStockSummary, createStockSummary, getItemSales, createItemSales, getStockAging, createStockAging, getValuationReport, createValuationReport, getStockSummaryByWarehouse, getItemSalesByWarehouse, getStockAgingByWarehouse, getValuationReportByWarehouse } from '../controllers/reportController.js';
+import { getAllRoles, getRoleById, createRole, updateRole, deleteRole } from '../controllers/roleController.js';
 
 // Create router instance
 export const router = express.Router();
@@ -68,12 +70,19 @@ export const router = express.Router();
 router.route('/auth/admin/login').post(loginAdmin);
 
 // ================================
+// ROLES & PERMISSIONS ROUTES
+// ================================
+router.route('/roles').get(verifyToken, getAllRoles).post(verifyToken, createRole);
+router.route('/roles/:id').get(verifyToken, getRoleById).put(verifyToken, updateRole).delete(verifyToken, deleteRole);
+
+// ================================
 // STAFF MANAGEMENT ROUTES
 // ================================
 
-// Staff CRUD operations
-router.route('/staff').get(verifyToken, getAllStaff).post(verifyToken, createStaff);
-router.route('/staff/:id').get(verifyToken, getStaffById).put(verifyToken, updateStaff).delete(verifyToken, deleteStaff);
+// Staff CRUD operations (staffDocumentUpload parses multipart form + files for document uploads to Cloudinary)
+router.route('/staff').get(verifyToken, getAllStaff).post(verifyToken, staffDocumentUpload, createStaff);
+router.route('/staff/download-document').get(verifyToken, downloadStaffDocument);
+router.route('/staff/:id').get(verifyToken, getStaffById).put(verifyToken, staffDocumentUpload, updateStaff).delete(verifyToken, deleteStaff);
 
 // ================================
 // WAREHOUSE MANAGEMENT ROUTES
@@ -95,9 +104,9 @@ router.route('/warehouse-capacities/:id').get(verifyToken, getWarehouseCapacityB
 router.route('/warehouse-capacities/warehouse/:warehouseId').get(verifyToken, getCapacityByWarehouse);
 
 // Warehouse Setup CRUD operations
-router.route('/warehouse-setups').get(verifyToken, getAllWarehouseSetups).post(verifyToken, createWarehouseSetup);
-router.route('/warehouse-setups/:id').get(verifyToken, getWarehouseSetupById).put(verifyToken, updateWarehouseSetup).delete(verifyToken, deleteWarehouseSetup);
-router.route('/warehouse-setups/warehouse/:warehouseId').get(verifyToken, getSetupByWarehouse);
+// router.route('/warehouse-setups').get(verifyToken, getAllWarehouseSetups).post(verifyToken, createWarehouseSetup);
+// router.route('/warehouse-setups/:id').get(verifyToken, getWarehouseSetupById).put(verifyToken, updateWarehouseSetup).delete(verifyToken, deleteWarehouseSetup);
+// router.route('/warehouse-setups/warehouse/:warehouseId').get(verifyToken, getSetupByWarehouse);
 
 // ================================
 // SUPPLIER MANAGEMENT ROUTES
@@ -115,7 +124,7 @@ router.route('/suppliers/:id').get(verifyToken, getSupplierById).put(verifyToken
 router.route('/items').get(verifyToken, getAllItems).post(verifyToken, createItem);
 router.route('/items/:id').get(verifyToken, getItemById).put(verifyToken, updateItem).delete(verifyToken, deleteItem);
 router.route('/items/category/:category').get(verifyToken, getItemsByCategory);
-router.route('/items/low-stock').get(verifyToken, getLowStockItems);
+router.route('/item/low-stock').get(verifyToken, getLowStockItems);
 
 // Category CRUD operations
 router.route('/categories').get(verifyToken, getAllCategories).post(verifyToken, createCategory);
@@ -133,7 +142,7 @@ router.route('/hsn-sac-codes/:id').get(verifyToken, getHsnSacCodeById).put(verif
 router.route('/batch-serial').get(verifyToken, getAllBatchSerialRecords).post(verifyToken, createBatchSerialRecord);
 router.route('/batch-serial/:id').get(verifyToken, getBatchSerialRecordById).put(verifyToken, updateBatchSerialRecord).delete(verifyToken, deleteBatchSerialRecord);
 router.route('/batch-serial/item/:itemId').get(verifyToken, getBatchSerialRecordsByItem);
-router.route('/batch-serial/warehouse/:warehouseId').get(verifyToken, getBatchSerialRecordsByWarehouse);
+//router.route('/batch-serial/warehouse/:warehouseId').get(verifyToken, getBatchSerialRecordsByWarehouse);
 
 // ================================
 // CUSTOMER MANAGEMENT ROUTES

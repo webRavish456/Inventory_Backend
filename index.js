@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import { connectDB } from './src/db/mongo-db-connect.js';
 import cors from 'cors';

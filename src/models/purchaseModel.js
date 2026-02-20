@@ -276,6 +276,11 @@ const purchaseOrderSchema = new mongoose.Schema(
             ref: 'Supplier',
             required: true
         },
+        productId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Product',
+            required: true
+        },
         supplierName: {
             type: String,
             required: true
@@ -284,78 +289,82 @@ const purchaseOrderSchema = new mongoose.Schema(
             type: Date,
             required: true
         },
-        expectedDate: {
-            type: Date,
-            required: true
-        },
-        items: [{
-            itemId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'Item',
-                required: true
-            },
-            itemName: {
-                type: String,
-                required: true
-            },
-            sku: {
-                type: String,
-                required: true
-            },
+        // expectedDate: {
+        //     type: Date,
+        //     required: true
+        // },
+        // items: [{
+        //     itemId: {
+        //         type: mongoose.Schema.Types.ObjectId,
+        //         ref: 'Item',
+        //         required: true
+        //     },
+        //     itemName: {
+        //         type: String,
+        //         required: true
+        //     },
+        //     sku: {
+        //         type: String,
+        //         required: true
+        //     },
             quantity: {
                 type: Number,
                 required: true
             },
-            unit: {
+            unitPrice: {
                 type: String,
                 required: true
             },
-            costPrice: {
-                type: Number,
-                required: true
-            },
-            totalAmount: {
-                type: Number,
-                required: true
-            }
-        }],
-        subtotal: {
-            type: Number,
-            required: true
-        },
-        taxAmount: {
-            type: Number,
-            required: true
-        },
+            // costPrice: {
+            //     type: Number,
+            //     required: true
+            // },
+            // totalAmount: {
+            //     type: Number,
+            //     required: true
+            // },
+        
+        // total: {
+        //     type: Number,
+        //     required: true
+        // // },
+        // taxAmount: {
+        //     type: Number,
+        //     required: true
+        // },
         totalAmount: {
             type: Number,
             required: true
         },
-        status: {
-            type: String,
-            enum: ['Pending', 'Approved', 'Partially Received', 'Completed', 'Cancelled'],
-            default: 'Pending'
-        },
-        warehouse: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse',
-            required: true
+        // status: {
+        //     type: String,
+        //     enum: ['Pending', 'Approved', 'Partially Received', 'Completed', 'Cancelled'],
+        //     default: 'Pending'
+        // },
+        // warehouse: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Warehouse',
+        //     required: true
+        // },
+        paymentTerms:{
+            type:String,
+            enum:['Net 15','Net 30','Net 60','Cash On Delivery','Advance Payment']
         },
         notes: {
             type: String
         },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        },
-        approvedBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff'
-        },
-        approvedAt: {
-            type: Date
-        }
+        // createdBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff',
+        //     required: true
+        // },
+        // approvedBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff'
+        // },
+        // approvedAt: {
+        //     type: Date
+        // }
     },
     { timestamps: true }
 );
@@ -365,11 +374,11 @@ const purchaseOrderSchema = new mongoose.Schema(
 // ================================
 const purchaseReturnSchema = new mongoose.Schema(
     {
-        returnNumber: {
-            type: String,
-            required: true,
-            unique: true
-        },
+        // returnNumber: {
+        //     type: String,
+        //     required: true,
+        //     unique: true
+        // },
         originalOrderId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'PurchaseOrder',
@@ -380,15 +389,14 @@ const purchaseReturnSchema = new mongoose.Schema(
             ref: 'Supplier',
             required: true
         },
-        supplierName: {
-            type: String,
-            required: true
-        },
+        // supplierName: {
+        //     type: String,
+        //     required: true
+        // },
         returnDate: {
             type: Date,
             required: true
         },
-        items: [{
             itemId: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: 'Item',
@@ -398,68 +406,67 @@ const purchaseReturnSchema = new mongoose.Schema(
                 type: String,
                 required: true
             },
-            sku: {
-                type: String,
-                required: true
-            },
+            // sku: {
+            //     type: String,
+            //     required: true
+            // },
             quantity: {
                 type: Number,
                 required: true
             },
-            unit: {
+            unitPrice: {
                 type: String,
                 required: true
             },
-            costPrice: {
-                type: Number,
-                required: true
-            },
+            // costPrice: {
+            //     type: Number,
+            //     required: true
+            // },
             totalAmount: {
                 type: Number,
                 required: true
             },
-            reason: {
+        reason: {
                 type: String,
                 required: true
-            }
-        }],
-        subtotal: {
-            type: Number,
-            required: true
-        },
-        taxAmount: {
-            type: Number,
-            required: true
-        },
-        totalAmount: {
-            type: Number,
-            required: true
-        },
-        status: {
-            type: String,
-            enum: ['Pending', 'Approved', 'Completed', 'Cancelled'],
-            default: 'Pending'
-        },
-        warehouse: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse',
-            required: true
-        },
+            },
+        // subtotal: {
+        //     type: Number,
+        //     required: true
+        // },
+        // taxAmount: {
+        //     type: Number,
+        //     required: true
+        // },
+        // totalAmount: {
+        //     type: Number,
+        //     required: true
+        // },
+        // status: {
+        //     type: String,
+        //     enum: ['Pending', 'Approved', 'Completed', 'Cancelled'],
+        //     default: 'Pending'
+        // },
+        // warehouse: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Warehouse',
+        //     required: true
+        // },
         notes: {
             type: String
         },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        },
-        approvedBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff'
-        },
-        approvedAt: {
-            type: Date
-        }
+        // createdBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff',
+        //     required: true
+        // },
+        // approvedBy: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Staff'
+        // },
+        // approvedAt: {
+        //     type: Date
+        // }
     },
     { timestamps: true }
 );

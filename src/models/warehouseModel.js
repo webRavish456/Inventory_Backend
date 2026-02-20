@@ -3,161 +3,241 @@ import mongoose from "mongoose";
 // ================================
 // BIN/RACK SCHEMA
 // ================================
+
 const binRackSchema = new mongoose.Schema(
-    {
-        warehouseId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse',
-            required: true
-        },
-        binId: {
-            type: String,
-            required: true
-        },
-        rackNumber: {
-            type: String,
-            required: true
-        },
-        level: {
-            type: String,
-            required: true
-        },
-        zone: {
-            type: String,
-            required: true
-        },
-        capacity: {
-            type: Number,
-            required: true
-        },
-        currentStock: {
-            type: Number,
-            default: 0
-        },
-        dimensions: {
-            length: Number,
-            width: Number,
-            height: Number,
-            unit: {
-                type: String,
-                enum: ['cm', 'm', 'ft', 'in'],
-                default: 'cm'
-            }
-        },
-        temperature: {
-            min: Number,
-            max: Number,
-            unit: {
-                type: String,
-                enum: ['Celsius', 'Fahrenheit'],
-                default: 'Celsius'
-            }
-        },
-        humidity: {
-            min: Number,
-            max: Number
-        },
-        isActive: {
-            type: Boolean,
-            default: true
-        },
-        isReserved: {
-            type: Boolean,
-            default: false
-        },
-        reservedFor: {
-            type: String
-        },
-        reservedUntil: {
-            type: Date
-        },
-        notes: {
-            type: String
-        },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        }
+  {
+    warehouseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Warehouse',
+      required: true
     },
-    { timestamps: true }
+    binId: {
+      type: String,
+      required: true
+    },
+    rackNumber: {
+      type: String,
+      required: true
+    },
+    binType: {
+      type: String,
+      enum: [
+        'Pallet Bin',
+        'Shelf Bin',
+        'Bulk Bin',
+        'Carton Bin',
+        'Small Parts Bin',
+        'Cold Storage Bin',
+        'Hazardous Bin',
+        'Floor Bin'
+      ],
+      required: true
+    },
+    location: {
+      type: String,
+      required: true
+    },
+    productCategory: {
+      type: String,
+      enum: [
+        'Electronics',
+        'Furniture',
+        'Clothing',
+        'Food & Beverages',
+        'Pharmaceuticals',
+        'Automotive',
+        'Books & Media',
+        'Home & Garden'
+      ],
+      required: true
+    },
+    level: {
+      type: String,
+      required: true
+    },
+    zone: {
+      type: String,
+      enum: [
+        'Zone A',
+        'Zone B',
+        'Zone C',
+        'Zone D',
+        'Zone E',
+        'Cold Storage',
+        'Hazardous',
+        'Bulk Storage',
+        'Pick & Pack'
+      ],
+      required: true
+    },
+    capacity: {
+      type: Number,
+      required: true
+    },
+    currentStock: {
+      type: Number,
+      default: 0
+    },
+    dimensions: {
+      length: Number,
+      width: Number,
+      height: Number,
+      unit: {
+        type: String,
+        enum: ['cm', 'm', 'ft', 'in'],
+        default: 'cm'
+      }
+    },
+    temperature: {
+      min: Number,
+      max: Number,
+      unit: {
+        type: String,
+        enum: ['Celsius', 'Fahrenheit'],
+        default: 'Celsius'
+      }
+    },
+    humidity: {
+      min: Number,
+      max: Number
+    },
+    isActive: {
+      type: Boolean,
+      default: true
+    },
+    isReserved: {
+      type: Boolean,
+      default: false
+    },
+    reservedFor: {
+      type: String
+    },
+    reservedUntil: {
+      type: Date
+    },
+    notes: {
+      type: String
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Staff',
+      required: true
+    }
+  },
+  { timestamps: true }
 );
+
+
 
 // ================================
 // WAREHOUSE CAPACITY SCHEMA
 // ================================
 const warehouseCapacitySchema = new mongoose.Schema(
-    {
-        warehouseId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Warehouse',
-            required: true
-        },
-        totalCapacity: {
-            type: Number,
-            required: true
-        },
-        usedCapacity: {
-            type: Number,
-            default: 0
-        },
-        availableCapacity: {
-            type: Number,
-            required: true
-        },
-        capacityUnit: {
-            type: String,
-            enum: ['cubic_meters', 'cubic_feet', 'pallets', 'units'],
-            default: 'cubic_meters'
-        },
-        weightCapacity: {
-            total: Number,
-            used: { type: Number, default: 0 },
-            available: Number,
-            unit: {
-                type: String,
-                enum: ['kg', 'tons', 'pounds'],
-                default: 'kg'
-            }
-        },
-        zoneCapacities: [{
-            zoneName: String,
-            totalCapacity: Number,
-            usedCapacity: { type: Number, default: 0 },
-            availableCapacity: Number
-        }],
-        rackCapacities: [{
-            rackNumber: String,
-            totalCapacity: Number,
-            usedCapacity: { type: Number, default: 0 },
-            availableCapacity: Number
-        }],
-        binCapacities: [{
-            binId: String,
-            totalCapacity: Number,
-            usedCapacity: { type: Number, default: 0 },
-            availableCapacity: Number
-        }],
-        lastUpdated: {
-            type: Date,
-            default: Date.now
-        },
-        alertThreshold: {
-            type: Number,
-            default: 80 // Percentage
-        },
-        isAlertTriggered: {
-            type: Boolean,
-            default: false
-        },
-        createdBy: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
-        }
+  {
+    warehouseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Warehouse',
+      required: true
     },
-    { timestamps: true }
-);
+    totalZonesInWarehouse: {
+      type: Number,
+      required: true
+    },
+    totalCapacity: {
+      type: Number,
+      required: true
+    },
+    usedCapacity: {
+      type: Number,
+      default: 0
+    },
+    availableCapacityVolume: {
+      type: Number,
+      required: true
+    },
+    availableCapacityWeight: {
+      type: Number,
+      required: true
+    },
+    totalCapacityVolume: {
+      type: Number, // in cubic meters
+      required: true
+    },
+    availableCapacityVolume: {
+      type: Number, // in cubic meters
+      default: 0
+    },
+    reservedCapacity: {
+      type: Number,
+      default: 0
+    },
+    capacityUnit: {
+      type: String,
+      enum: ['cubic_meters', 'cubic_feet', 'pallets', 'units'],
+      default: 'cubic_meters'
+    },
+    weightCapacity: {
+      total: Number,
+      used: { type: Number, default: 0 },
+      available: Number,
+      unit: {
+        type: String,
+        enum: ['kg', 'tons', 'pounds'],
+        default: 'kg'
+      }
+    },
+    utilizationPercent: {
+      type: Number,
+      default: 0
+    },
+    throughputCapacity: {
+      type: Number, // orders/day
+      default: 0
+    },
+    zoneCapacities: [{
+      zoneName: String,
+      totalCapacity: Number,
+      usedCapacity: { type: Number, default: 0 },
+      availableCapacity: Number,
+      bins: Number // Added to match React dynamic zone fields
+    }],
+    rackCapacities: [{
+      rackNumber: String,
+      totalCapacity: Number,
+      usedCapacity: { type: Number, default: 0 },
+      availableCapacity: Number
+    }],
+    binCapacities: [{
+      binId: String,
+      totalCapacity: Number,
+      usedCapacity: { type: Number, default: 0 },
+      availableCapacity: Number
+    }],
+    status: {
+      type: String,
+      enum: ['Good', 'Warning', 'Critical'],
+      default: 'Good'
+    },
+    lastUpdated: {
+      type: Date,
+      default: Date.now
+    },
+    alertThreshold: {
+      type: Number,
+      default: 80 // Percentage
+    },
+    isAlertTriggered: {
+      type: Boolean,
+      default: false
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Staff',
+      required: true
+    }
+  },
+  { timestamps: true }
+)
 
 // ================================
 // WAREHOUSE SETUP SCHEMA
@@ -289,6 +369,9 @@ const warehouseSchema = new mongoose.Schema(
             type: String,
             required: true
         },
+        location:{
+            type:String
+        },
         city: {
             type: String,
             required: true
@@ -303,7 +386,7 @@ const warehouseSchema = new mongoose.Schema(
         },
         capacity: {
             type: Number,
-            required: true
+            default: 0
         },
         currentStock: {
             type: Number,
@@ -311,17 +394,56 @@ const warehouseSchema = new mongoose.Schema(
         },
         manager: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
+            ref: 'Staff'
         },
         contactNumber: {
-            type: String,
-            required: true
+            type: String
         },
         status: {
             type: String,
-            enum: ['Active', 'Inactive', 'Maintenance'],
+            enum: ['Active', 'Inactive', 'Maintenance', 'Under Maintenance'],
             default: 'Active'
+        },
+        contactPerson: {
+            type: String
+        },
+        contactPersonPhone: {
+            type: String
+        },
+        contactPersonEmail: {
+            type: String
+        },
+        // Branch frontend fields
+        alternatePhone: {
+            type: String
+        },
+        email: {
+            type: String
+        },
+        country: {
+            type: String,
+            default: 'India'
+        },
+        gstNumber: {
+            type: String
+        },
+        panNumber: {
+            type: String
+        },
+        managerName: {
+            type: String
+        },
+        managerEmail: {
+            type: String
+        },
+        employeeCount: {
+            type: Number
+        },
+        area: {
+            type: Number
+        },
+        rentAmount: {
+            type: Number
         },
         bins: [{
             binId: String,
@@ -333,8 +455,8 @@ const warehouseSchema = new mongoose.Schema(
         // Additional fields for comprehensive warehouse management
         warehouseType: {
             type: String,
-            enum: ['Main', 'Branch', 'Distribution Center', 'Cold Storage', 'Bonded'],
-            default: 'Main'
+            enum: ['Main', 'Branch', 'Distribution Center', 'Cold Storage', 'Bonded', 'Head Office', 'Regional Office', 'Warehouse'],
+            default: 'Branch'
         },
         operatingHours: {
             start: String,
@@ -343,6 +465,21 @@ const warehouseSchema = new mongoose.Schema(
                 type: String,
                 default: 'Asia/Kolkata'
             }
+        },
+        tempreatureControl:{
+            type:String,
+            enum:['Controlled','Climate Controlled','Amibent','Cold Storage']
+        },
+        securityLevel:{
+            type:String,
+            enum:['High','Very High','Medium','Low']
+        },
+        automationLevel:{
+            type:String,
+            enum:['Fully Automated','Semi Automated','Manual']
+        },
+        establishDate: {
+            type: Date
         },
         specialFeatures: [{
             feature: String,
@@ -354,8 +491,7 @@ const warehouseSchema = new mongoose.Schema(
         },
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'Staff',
-            required: true
+            ref: 'Staff'
         }
     },
     { timestamps: true }

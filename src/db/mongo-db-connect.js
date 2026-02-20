@@ -4,12 +4,7 @@ import { createAdmin } from "../seedData/createAdmin.js";
 
 dotenv.config();
 
-const username = process.env.MONGO_USER;
-const password = process.env.MONGO_PASSWORD;
-const clusterName = process.env.MONGO_CLUSTER_NAME;
-
-
-const connection_string = `mongodb+srv://${username}:${password}@${clusterName}.porns6t.mongodb.net/inventory?retryWrites=true&w=majority&appName=Inventory`;
+const connection_string = process.env.MONGO_URI;
 
 export const connectDB = async () => {
   try {

@@ -424,8 +424,6 @@ export const getAllOpeningStock = async (req, res) => {
     const records = await OpeningStockModel.find()
       .populate('itemId')
       .populate('warehouseId')
-      .populate('createdBy')
-      .populate('verifiedBy')
       .sort({ createdAt: -1 });
     res.json({
       success: true,
